@@ -88,131 +88,35 @@
     #showreel { padding: 100px 48px; }
     .showreel-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 48px; }
 
+
+    /* Inline reel embeds */
     .reels-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 16px;
     }
-
-    .reel-card {
-      position: relative;
+    .reel-embed-card {
       border-radius: 20px;
       overflow: hidden;
       background: var(--verde2);
       border: 1px solid rgba(200,131,42,0.15);
-      transition: all 0.3s;
-      cursor: pointer;
+      transition: transform 0.3s, border-color 0.3s;
     }
-    .reel-card:hover {
-      border-color: rgba(200,131,42,0.5);
-      transform: translateY(-6px);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    .reel-embed-card:hover {
+      border-color: rgba(200,131,42,0.4);
+      transform: translateY(-4px);
     }
-
-    /* Thumb do reel — aspect ratio stories */
-    .reel-thumb {
-      aspect-ratio: 9/16;
-      background: linear-gradient(160deg, var(--verde2), rgba(200,131,42,0.08));
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      gap: 16px; position: relative; overflow: hidden;
+    .reel-embed-card .instagram-media {
+      background: transparent !important;
+      border: 0 !important;
+      border-radius: 0 !important;
+      margin: 0 !important;
+      min-width: unset !important;
+      width: 100% !important;
     }
-
-    /* Gradiente decorativo no fundo do thumb */
-    .reel-thumb::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(180deg, transparent 40%, rgba(13,34,24,0.9) 100%);
-      z-index: 1;
+    @media (max-width: 768px) {
+      .reels-grid { grid-template-columns: repeat(2, 1fr); }
     }
-
-    .reel-thumb-icon {
-      font-size: 40px; opacity: 0.4; z-index: 2;
-    }
-
-    .reel-num {
-      position: absolute; top: 12px; left: 14px;
-      font-family: 'Bebas Neue', sans-serif;
-      font-size: 22px; color: var(--dourado); opacity: 0.6; z-index: 2;
-    }
-
-    .reel-play-btn {
-      position: absolute; inset: 0; z-index: 3;
-      display: flex; align-items: center; justify-content: center;
-      opacity: 0; transition: opacity 0.3s;
-    }
-    .reel-card:hover .reel-play-btn { opacity: 1; }
-
-    .reel-play-circle {
-      width: 56px; height: 56px; border-radius: 50%;
-      background: rgba(200,131,42,0.9);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px; color: var(--verde);
-      box-shadow: 0 8px 32px rgba(200,131,42,0.5);
-      transition: transform 0.2s;
-    }
-    .reel-card:hover .reel-play-circle { transform: scale(1.1); }
-
-    .reel-info {
-      padding: 14px 16px;
-      position: relative; z-index: 2;
-    }
-    .reel-info p {
-      font-size: 12px; color: var(--areia); letter-spacing: 0.5px;
-      display: flex; align-items: center; gap: 6px;
-    }
-    .reel-info p::before {
-      content: '';
-      width: 4px; height: 4px;
-      border-radius: 50%; background: var(--dourado);
-      flex-shrink: 0;
-    }
-
-    /* Modal do reel */
-    #reel-modal {
-      display: none; position: fixed; inset: 0;
-      background: rgba(0,0,0,0.92); z-index: 9000;
-      align-items: center; justify-content: center;
-      padding: 20px;
-    }
-    #reel-modal.open { display: flex; }
-
-    .modal-inner {
-      position: relative;
-      width: 100%; max-width: 400px;
-    }
-
-    .modal-close {
-      position: absolute; top: -48px; right: 0;
-      font-size: 28px; color: var(--creme);
-      cursor: pointer; background: none; border: none;
-      opacity: 0.7; transition: opacity 0.2s;
-    }
-    .modal-close:hover { opacity: 1; }
-
-    .modal-embed {
-      border-radius: 20px; overflow: hidden;
-      background: #000;
-      box-shadow: 0 40px 100px rgba(0,0,0,0.8);
-    }
-    .modal-embed iframe {
-      width: 100%; border: none; display: block;
-      min-height: 600px;
-    }
-
-    .modal-nav {
-      display: flex; align-items: center; justify-content: center;
-      gap: 16px; margin-top: 20px;
-    }
-    .modal-nav button {
-      background: rgba(200,131,42,0.15);
-      border: 1px solid rgba(200,131,42,0.3);
-      color: var(--creme); border-radius: 50%;
-      width: 44px; height: 44px; font-size: 18px;
-      cursor: pointer; transition: all 0.2s;
-    }
-    .modal-nav button:hover { background: var(--dourado); color: var(--verde); }
-    .modal-counter { font-size: 13px; color: var(--areia); letter-spacing: 1px; }
 
     /* Stats */
     .showreel-stats {
@@ -312,19 +216,6 @@
 
   <div class="cursor" id="cursor"></div>
 
-  <!-- Modal Reel -->
-  <div id="reel-modal">
-    <div class="modal-inner">
-      <button class="modal-close" onclick="closeModal()">✕</button>
-      <div class="modal-embed" id="modal-embed"></div>
-      <div class="modal-nav">
-        <button onclick="prevReel()">←</button>
-        <span class="modal-counter" id="modal-counter">1 / 8</span>
-        <button onclick="nextReel()">→</button>
-      </div>
-    </div>
-  </div>
-
   <!-- Lightbox fotos -->
   <div id="lightbox">
     <button id="lightbox-close" onclick="closeLightbox()">✕</button>
@@ -361,7 +252,7 @@
     <div class="hero-right reveal">
       <div class="hero-img-wrapper">
         <div class="hero-img-frame">
-          <img src="assets/foto3.jpg" alt="André & Thiago tocando" />
+          <img src="assets/foto3.jpeg" alt="André & Thiago tocando" />
         </div>
         <div class="hero-badge">
           <div class="hero-badge-num">+5</div>
@@ -426,69 +317,29 @@
     </div>
 
     <div class="reels-grid reveal">
-      <div class="reel-card" onclick="openReel(0)">
-        <div class="reel-thumb">
-          <span class="reel-num">01</span>
-          <span class="reel-thumb-icon">🎸</span>
-          <div class="reel-play-btn"><div class="reel-play-circle">▶</div></div>
-        </div>
-        <div class="reel-info"><p>Show ao vivo</p></div>
+      <div class="reel-embed-card">
+        <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DI1qOwKxNVD/" data-instgrm-version="14"></blockquote>
       </div>
-      <div class="reel-card" onclick="openReel(1)">
-        <div class="reel-thumb">
-          <span class="reel-num">02</span>
-          <span class="reel-thumb-icon">🎤</span>
-          <div class="reel-play-btn"><div class="reel-play-circle">▶</div></div>
-        </div>
-        <div class="reel-info"><p>Noite de show</p></div>
+      <div class="reel-embed-card">
+        <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DI1qXfqRX3a/" data-instgrm-version="14"></blockquote>
       </div>
-      <div class="reel-card" onclick="openReel(2)">
-        <div class="reel-thumb">
-          <span class="reel-num">03</span>
-          <span class="reel-thumb-icon">🎵</span>
-          <div class="reel-play-btn"><div class="reel-play-circle">▶</div></div>
-        </div>
-        <div class="reel-info"><p>Apresentação especial</p></div>
+      <div class="reel-embed-card">
+        <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DI1qetgRQeK/" data-instgrm-version="14"></blockquote>
       </div>
-      <div class="reel-card" onclick="openReel(3)">
-        <div class="reel-thumb">
-          <span class="reel-num">04</span>
-          <span class="reel-thumb-icon">🌟</span>
-          <div class="reel-play-btn"><div class="reel-play-circle">▶</div></div>
-        </div>
-        <div class="reel-info"><p>Momento único</p></div>
+      <div class="reel-embed-card">
+        <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DI1qmzQxl3p/" data-instgrm-version="14"></blockquote>
       </div>
-      <div class="reel-card" onclick="openReel(4)">
-        <div class="reel-thumb">
-          <span class="reel-num">05</span>
-          <span class="reel-thumb-icon">🎶</span>
-          <div class="reel-play-btn"><div class="reel-play-circle">▶</div></div>
-        </div>
-        <div class="reel-info"><p>Ao vivo no bar</p></div>
+      <div class="reel-embed-card">
+        <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DJzFk_Dx1z5/" data-instgrm-version="14"></blockquote>
       </div>
-      <div class="reel-card" onclick="openReel(5)">
-        <div class="reel-thumb">
-          <span class="reel-num">06</span>
-          <span class="reel-thumb-icon">🎼</span>
-          <div class="reel-play-btn"><div class="reel-play-circle">▶</div></div>
-        </div>
-        <div class="reel-info"><p>Show no restaurante</p></div>
+      <div class="reel-embed-card">
+        <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DKMiazGNODh/" data-instgrm-version="14"></blockquote>
       </div>
-      <div class="reel-card" onclick="openReel(6)">
-        <div class="reel-thumb">
-          <span class="reel-num">07</span>
-          <span class="reel-thumb-icon">🔥</span>
-          <div class="reel-play-btn"><div class="reel-play-circle">▶</div></div>
-        </div>
-        <div class="reel-info"><p>Energia total</p></div>
+      <div class="reel-embed-card">
+        <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DKZvR1mtww4/" data-instgrm-version="14"></blockquote>
       </div>
-      <div class="reel-card" onclick="openReel(7)">
-        <div class="reel-thumb">
-          <span class="reel-num">08</span>
-          <span class="reel-thumb-icon">✨</span>
-          <div class="reel-play-btn"><div class="reel-play-circle">▶</div></div>
-        </div>
-        <div class="reel-info"><p>Último show</p></div>
+      <div class="reel-embed-card">
+        <blockquote class="instagram-media" data-instgrm-permalink="https://www.instagram.com/reel/DMc-jGKxy3o/" data-instgrm-version="14"></blockquote>
       </div>
     </div>
 
@@ -515,12 +366,12 @@
       <p style="color:var(--areia);font-size:14px;max-width:280px;text-align:right">Cada show é um momento único. Veja um pouco da nossa energia no palco.</p>
     </div>
     <div class="galeria-grid reveal">
-      <div class="galeria-item" onclick="openLightbox('assets/foto1.jpg')"><img src="assets/foto1.jpg" alt="Show 1" /></div>
-      <div class="galeria-item" onclick="openLightbox('assets/foto3.jpg')"><img src="assets/foto3.jpg" alt="Show 2" /></div>
-      <div class="galeria-item" onclick="openLightbox('assets/foto6.jpg')"><img src="assets/foto6.jpg" alt="Show 3" /></div>
-      <div class="galeria-item" onclick="openLightbox('assets/foto4.jpg')"><img src="assets/foto4.jpg" alt="Show 4" /></div>
-      <div class="galeria-item" onclick="openLightbox('assets/foto5.jpg')"><img src="assets/foto5.jpg" alt="Show 5" /></div>
-      <div class="galeria-item" onclick="openLightbox('assets/foto2.jpg')"><img src="assets/foto2.jpg" alt="Show 6" /></div>
+      <div class="galeria-item" onclick="openLightbox('assets/foto1.jpeg')"><img src="assets/foto1.jpeg" alt="Show 1" /></div>
+      <div class="galeria-item" onclick="openLightbox('assets/foto3.jpeg')"><img src="assets/foto3.jpeg" alt="Show 2" /></div>
+      <div class="galeria-item" onclick="openLightbox('assets/foto6.jpeg')"><img src="assets/foto6.jpeg" alt="Show 3" /></div>
+      <div class="galeria-item" onclick="openLightbox('assets/foto4.jpeg')"><img src="assets/foto4.jpeg" alt="Show 4" /></div>
+      <div class="galeria-item" onclick="openLightbox('assets/foto5.jpeg')"><img src="assets/foto5.jpeg" alt="Show 5" /></div>
+      <div class="galeria-item" onclick="openLightbox('assets/foto2.jpeg')"><img src="assets/foto2.jpeg" alt="Show 6" /></div>
     </div>
   </section>
 
@@ -588,65 +439,6 @@
   </footer>
 
   <script>
-    // Reels do Instagram — IDs extraídos dos links
-    const reels = [
-      { id: 'DI1qOwKxNVD', title: 'Show ao vivo' },
-      { id: 'DI1qXfqRX3a', title: 'Noite de show' },
-      { id: 'DI1qetgRQeK', title: 'Apresentação especial' },
-      { id: 'DI1qmzQxl3p', title: 'Momento único' },
-      { id: 'DJzFk_Dx1z5', title: 'Ao vivo no bar' },
-      { id: 'DKMiazGNODh', title: 'Show no restaurante' },
-      { id: 'DKZvR1mtww4', title: 'Energia total' },
-      { id: 'DMc-jGKxy3o', title: 'Último show' },
-    ];
-
-    let currentReel = 0;
-
-    function openReel(index) {
-      currentReel = index;
-      renderReel();
-      document.getElementById('reel-modal').classList.add('open');
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeModal() {
-      document.getElementById('reel-modal').classList.remove('open');
-      document.getElementById('modal-embed').innerHTML = '';
-      document.body.style.overflow = '';
-    }
-
-    function renderReel() {
-      const reel = reels[currentReel];
-      document.getElementById('modal-counter').textContent = `${currentReel + 1} / ${reels.length}`;
-      document.getElementById('modal-embed').innerHTML = `
-        <blockquote
-          class="instagram-media"
-          data-instgrm-captioned
-          data-instgrm-permalink="https://www.instagram.com/reel/${reel.id}/"
-          data-instgrm-version="14"
-          style="background:#000;border:0;border-radius:20px;margin:0;max-width:100%;width:100%;">
-        </blockquote>
-      `;
-      // Reprocess Instagram embeds
-      if (window.instgrm) {
-        window.instgrm.Embeds.process();
-      }
-    }
-
-    function nextReel() {
-      currentReel = (currentReel + 1) % reels.length;
-      renderReel();
-    }
-
-    function prevReel() {
-      currentReel = (currentReel - 1 + reels.length) % reels.length;
-      renderReel();
-    }
-
-    // Fechar modal ao clicar fora
-    document.getElementById('reel-modal').addEventListener('click', e => {
-      if (e.target === document.getElementById('reel-modal')) closeModal();
-    });
 
     // Cursor
     const cursor = document.getElementById('cursor');
