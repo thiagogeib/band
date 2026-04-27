@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>André & Thiago — Música ao Vivo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=DM+Sans:wght@300;400;500&family=Bebas+Neue&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --verde:   #0d2218;
+      --verde2:  #163a28;
+      --dourado: #c8832a;
+      --creme:   #e8c87a;
+      --areia:   #d4b896;
+      --texto:   #e8e0d4;
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--verde); color: var(--texto); font-family: 'DM Sans', sans-serif; overflow-x: hidden; cursor: none; }
+
+    .cursor { width: 12px; height: 12px; background: var(--dourado); border-radius: 50%; position: fixed; top: 0; left: 0; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); transition: width 0.2s, height 0.2s; mix-blend-mode: difference; }
+    .cursor.hover { width: 40px; height: 40px; opacity: 0.5; }
+    body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9998; opacity: 0.35; }
+
+    /* NAV */
+    nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; background: linear-gradient(to bottom, rgba(13,34,24,0.97), transparent); transition: background 0.3s; }
+    nav.scrolled { background: rgba(13,34,24,0.98); border-bottom: 1px solid rgba(200,131,42,0.1); }
+    .nav-logo { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .nav-logo img { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--dourado); object-fit: cover; }
+    .nav-logo span { font-family: 'Playfair Display', serif; font-size: 15px; letter-spacing: 3px; color: var(--creme); text-transform: uppercase; }
+    .nav-links { display: flex; gap: 36px; list-style: none; }
+    .nav-links a { color: var(--areia); text-decoration: none; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--dourado); }
+    .nav-cta { background: var(--dourado) !important; color: var(--verde) !important; padding: 10px 24px; border-radius: 30px; font-weight: 500 !important; }
+
+    /* HERO */
+    #hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; align-items: center; padding: 120px 48px 80px; position: relative; overflow: hidden; }
+    .hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse 60% 80% at 70% 50%, rgba(200,131,42,0.07) 0%, transparent 70%); }
+    .hero-lines { position: absolute; inset: 0; pointer-events: none; background-image: linear-gradient(rgba(200,131,42,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(200,131,42,0.03) 1px, transparent 1px); background-size: 60px 60px; }
+    .hero-left { position: relative; z-index: 2; }
+    .hero-tag { display: inline-flex; align-items: center; gap: 8px; background: rgba(200,131,42,0.12); border: 1px solid rgba(200,131,42,0.3); border-radius: 30px; padding: 6px 16px; font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--dourado); margin-bottom: 32px; }
+    .hero-tag::before { content: ''; width: 6px; height: 6px; background: var(--dourado); border-radius: 50%; animation: blink 1.5s ease-in-out infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+    .hero-title { font-family: 'Playfair Display', serif; font-size: clamp(52px, 7vw, 90px); font-weight: 900; line-height: 0.95; color: var(--creme); margin-bottom: 24px; }
+    .hero-title em { font-style: italic; color: var(--dourado); display: block; }
+    .hero-sub { font-size: 16px; line-height: 1.7; color: var(--areia); max-width: 420px; margin-bottom: 48px; }
+    .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; }
+    .btn-primary { background: var(--dourado); color: var(--verde); padding: 16px 36px; border-radius: 50px; font-size: 14px; font-weight: 500; letter-spacing: 1px; text-decoration: none; text-transform: uppercase; transition: all 0.3s; box-shadow: 0 8px 32px rgba(200,131,42,0.3); display: inline-block; }
+    .btn-primary:hover { background: var(--creme); transform: translateY(-2px); }
+    .btn-secondary { border: 1px solid rgba(232,200,122,0.3); color: var(--creme); padding: 16px 36px; border-radius: 50px; font-size: 14px; letter-spacing: 1px; text-transform: uppercase; text-decoration: none; transition: all 0.3s; }
+    .btn-secondary:hover { border-color: var(--dourado); color: var(--dourado); transform: translateY(-2px); }
+    .hero-right { position: relative; z-index: 2; display: flex; align-items: center; justify-content: center; }
+    .hero-img-wrapper { position: relative; width: 400px; height: 500px; }
+    .hero-img-frame { position: absolute; inset: 0; border: 2px solid rgba(200,131,42,0.3); border-radius: 200px 200px 140px 140px; overflow: hidden; }
+    .hero-img-frame img { width: 100%; height: 100%; object-fit: cover; object-position: center top; filter: sepia(15%) brightness(0.88); }
+    .hero-badge { position: absolute; bottom: 40px; right: -20px; background: var(--verde2); border: 1px solid rgba(200,131,42,0.3); border-radius: 16px; padding: 16px 20px; }
+    .hero-badge-num { font-family: 'Bebas Neue', sans-serif; font-size: 40px; color: var(--dourado); line-height: 1; }
+    .hero-badge-txt { font-size: 11px; color: var(--areia); letter-spacing: 1.5px; }
+    .deco-star { position: absolute; color: var(--dourado); font-size: 24px; opacity: 0.5; animation: spin 8s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* DIVISOR */
+    .divider { display: flex; align-items: center; gap: 24px; padding: 0 48px; margin: 20px 0; }
+    .divider-line { flex: 1; height: 1px; background: rgba(200,131,42,0.1); }
+    .divider-ornament { color: var(--dourado); font-size: 18px; opacity: 0.4; }
+
+    /* SOBRE */
+    #sobre { padding: 100px 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .sobre-card-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .sobre-card { background: var(--verde2); border: 1px solid rgba(200,131,42,0.15); border-radius: 20px; padding: 28px 24px; transition: all 0.3s; position: relative; overflow: hidden; }
+    .sobre-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--dourado), transparent); opacity: 0; transition: opacity 0.3s; }
+    .sobre-card:hover { border-color: rgba(200,131,42,0.4); transform: translateY(-4px); }
+    .sobre-card:hover::before { opacity: 1; }
+    .sobre-card-icon { font-size: 32px; margin-bottom: 12px; }
+    .sobre-card h4 { font-family: 'Playfair Display', serif; font-size: 18px; color: var(--creme); margin-bottom: 8px; }
+    .sobre-card p { font-size: 13px; color: var(--areia); line-height: 1.6; }
+    .sobre-card.destaque { grid-column: span 2; background: linear-gradient(135deg, rgba(200,131,42,0.1), rgba(200,131,42,0.03)); border-color: rgba(200,131,42,0.25); }
+    .section-label { font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--dourado); margin-bottom: 16px; display: flex; align-items: center; gap: 12px; }
+    .section-label::before { content: ''; width: 32px; height: 1px; background: var(--dourado); }
+    .section-title { font-family: 'Playfair Display', serif; font-size: clamp(36px, 4vw, 52px); font-weight: 900; line-height: 1.1; color: var(--creme); margin-bottom: 24px; }
+    .section-title em { font-style: italic; color: var(--dourado); }
+    .section-body { font-size: 16px; line-height: 1.8; color: var(--areia); margin-bottom: 32px; }
+    .estilos-lista { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 40px; }
+    .estilo-tag { background: rgba(200,131,42,0.1); border: 1px solid rgba(200,131,42,0.25); color: var(--creme); border-radius: 30px; padding: 6px 18px; font-size: 13px; }
+
+    /* SHOWREEL — Instagram Reels */
+    #showreel { padding: 100px 48px; }
+    .showreel-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 48px; }
+
+    .reels-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .reel-card {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      background: var(--verde2);
+      border: 1px solid rgba(200,131,42,0.15);
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+    .reel-card:hover {
+      border-color: rgba(200,131,42,0.5);
+      transform: translateY(-6px);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+
+    /* Thumb do reel — aspect ratio stories */
+    .reel-thumb {
+      aspect-ratio: 9/16;
+      background: linear-gradient(160deg, var(--verde2), rgba(200,131,42,0.08));
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 16px; position: relative; overflow: hidden;
+    }
+
+    /* Gradiente decorativo no fundo do thumb */
+    .reel-thumb::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, transparent 40%, rgba(13,34,24,0.9) 100%);
+      z-index: 1;
+    }
+
+    .reel-thumb-icon {
+      font-size: 40px; opacity: 0.4; z-index: 2;
+    }
+
+    .reel-num {
+      position: absolute; top: 12px; left: 14px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 22px; color: var(--dourado); opacity: 0.6; z-index: 2;
+    }
+
+    .reel-play-btn {
+      position: absolute; inset: 0; z-index: 3;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .reel-card:hover .reel-play-btn { opacity: 1; }
+
+    .reel-play-circle {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: rgba(200,131,42,0.9);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; color: var(--verde);
+      box-shadow: 0 8px 32px rgba(200,131,42,0.5);
+      transition: transform 0.2s;
+    }
+    .reel-card:hover .reel-play-circle { transform: scale(1.1); }
+
+    .reel-info {
+      padding: 14px 16px;
+      position: relative; z-index: 2;
+    }
+    .reel-info p {
+      font-size: 12px; color: var(--areia); letter-spacing: 0.5px;
+      display: flex; align-items: center; gap: 6px;
+    }
+    .reel-info p::before {
+      content: '';
+      width: 4px; height: 4px;
+      border-radius: 50%; background: var(--dourado);
+      flex-shrink: 0;
+    }
+
+    /* Modal do reel */
+    #reel-modal {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.92); z-index: 9000;
+      align-items: center; justify-content: center;
+      padding: 20px;
+    }
+    #reel-modal.open { display: flex; }
+
+    .modal-inner {
+      position: relative;
+      width: 100%; max-width: 400px;
+    }
+
+    .modal-close {
+      position: absolute; top: -48px; right: 0;
+      font-size: 28px; color: var(--creme);
+      cursor: pointer; background: none; border: none;
+      opacity: 0.7; transition: opacity 0.2s;
+    }
+    .modal-close:hover { opacity: 1; }
+
+    .modal-embed {
+      border-radius: 20px; overflow: hidden;
+      background: #000;
+      box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+    }
+    .modal-embed iframe {
+      width: 100%; border: none; display: block;
+      min-height: 600px;
+    }
+
+    .modal-nav {
+      display: flex; align-items: center; justify-content: center;
+      gap: 16px; margin-top: 20px;
+    }
+    .modal-nav button {
+      background: rgba(200,131,42,0.15);
+      border: 1px solid rgba(200,131,42,0.3);
+      color: var(--creme); border-radius: 50%;
+      width: 44px; height: 44px; font-size: 18px;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .modal-nav button:hover { background: var(--dourado); color: var(--verde); }
+    .modal-counter { font-size: 13px; color: var(--areia); letter-spacing: 1px; }
+
+    /* Stats */
+    .showreel-stats {
+      display: flex; align-items: center; justify-content: center;
+      margin-top: 64px;
+      background: var(--verde2); border: 1px solid rgba(200,131,42,0.15);
+      border-radius: 24px; padding: 32px 48px;
+    }
+    .stat-item { text-align: center; padding: 0 48px; }
+    .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 52px; color: var(--dourado); line-height: 1; margin-bottom: 6px; }
+    .stat-label { font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--areia); }
+    .stat-divider { width: 1px; height: 60px; background: rgba(200,131,42,0.15); flex-shrink: 0; }
+
+    /* GALERIA */
+    #galeria { padding: 100px 48px; }
+    .galeria-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 48px; }
+    .galeria-grid { display: grid; grid-template-columns: repeat(12, 1fr); grid-template-rows: repeat(2, 280px); gap: 16px; }
+    .galeria-item { background: var(--verde2); border-radius: 20px; overflow: hidden; position: relative; cursor: pointer; }
+    .galeria-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s, filter 0.3s; filter: sepia(10%) brightness(0.85); }
+    .galeria-item:hover img { transform: scale(1.05); filter: sepia(0%) brightness(1); }
+    .galeria-item::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(13,34,24,0.7), transparent 60%); pointer-events: none; }
+    .galeria-item:nth-child(1) { grid-column: span 5; }
+    .galeria-item:nth-child(2) { grid-column: span 4; }
+    .galeria-item:nth-child(3) { grid-column: span 3; }
+    .galeria-item:nth-child(4) { grid-column: span 3; }
+    .galeria-item:nth-child(5) { grid-column: span 5; }
+    .galeria-item:nth-child(6) { grid-column: span 4; }
+
+    /* LIGHTBOX */
+    #lightbox { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 9000; align-items: center; justify-content: center; }
+    #lightbox.open { display: flex; }
+    #lightbox img { max-width: 90vw; max-height: 88vh; border-radius: 12px; object-fit: contain; }
+    #lightbox-close { position: absolute; top: 24px; right: 32px; font-size: 32px; color: var(--creme); cursor: pointer; opacity: 0.7; background: none; border: none; }
+
+    /* CONTATO */
+    #contato { padding: 100px 48px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+    .contato-cards { display: flex; flex-direction: column; gap: 16px; margin-top: 40px; }
+    .contato-card { display: flex; align-items: center; gap: 20px; background: var(--verde2); border: 1px solid rgba(200,131,42,0.15); border-radius: 20px; padding: 20px 24px; text-decoration: none; color: inherit; transition: all 0.3s; }
+    .contato-card:hover { border-color: rgba(200,131,42,0.5); transform: translateX(8px); background: rgba(200,131,42,0.06); }
+    .contato-card-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0; }
+    .contato-card-icon.whats { background: rgba(37,211,102,0.15); }
+    .contato-card-icon.insta { background: rgba(225,48,108,0.15); }
+    .contato-card-text h4 { font-family: 'Playfair Display', serif; font-size: 16px; color: var(--creme); margin-bottom: 4px; }
+    .contato-card-text p { font-size: 13px; color: var(--areia); }
+    .contato-card-arrow { margin-left: auto; color: var(--dourado); font-size: 18px; transition: transform 0.2s; }
+    .contato-card:hover .contato-card-arrow { transform: translateX(4px); }
+    .form-wrapper { background: var(--verde2); border: 1px solid rgba(200,131,42,0.15); border-radius: 28px; padding: 48px 40px; }
+    .form-title { font-family: 'Playfair Display', serif; font-size: 26px; color: var(--creme); margin-bottom: 8px; }
+    .form-sub { font-size: 14px; color: var(--areia); margin-bottom: 36px; }
+    .form-group { margin-bottom: 20px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group label { display: block; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--dourado); margin-bottom: 8px; }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; background: rgba(255,255,255,0.04); border: 1px solid rgba(200,131,42,0.2); border-radius: 12px; padding: 14px 18px; color: var(--texto); font-family: 'DM Sans', sans-serif; font-size: 15px; outline: none; transition: border-color 0.2s; }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--dourado); background: rgba(200,131,42,0.04); }
+    .form-group select option { background: var(--verde2); }
+    .form-group textarea { resize: vertical; min-height: 120px; }
+    .btn-form { width: 100%; background: var(--dourado); color: var(--verde); border: none; border-radius: 50px; padding: 18px; font-size: 15px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; transition: all 0.3s; margin-top: 8px; font-family: 'DM Sans', sans-serif; }
+    .btn-form:hover { background: var(--creme); box-shadow: 0 8px 32px rgba(200,131,42,0.4); transform: translateY(-2px); }
+
+    /* FOOTER */
+    footer { border-top: 1px solid rgba(200,131,42,0.1); padding: 40px 48px; display: flex; align-items: center; justify-content: space-between; }
+    .footer-brand { display: flex; align-items: center; gap: 12px; }
+    .footer-brand img { width: 36px; height: 36px; border-radius: 50%; border: 1.5px solid rgba(200,131,42,0.4); object-fit: cover; }
+    .footer-brand span { font-family: 'Playfair Display', serif; font-size: 14px; color: var(--areia); letter-spacing: 2px; }
+
+    /* REVEAL */
+    .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      nav { padding: 16px 20px; }
+      .nav-links { display: none; }
+      #hero { grid-template-columns: 1fr; padding: 100px 20px 60px; }
+      .hero-right { display: none; }
+      #sobre { grid-template-columns: 1fr; padding: 60px 20px; gap: 40px; }
+      #showreel { padding: 60px 20px; }
+      .reels-grid { grid-template-columns: repeat(2, 1fr); }
+      .showreel-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .showreel-stats { flex-wrap: wrap; gap: 24px; padding: 24px 16px; }
+      .stat-item { padding: 0 16px; }
+      .stat-divider { display: none; }
+      #galeria { padding: 60px 20px; }
+      .galeria-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+      .galeria-item { grid-column: span 1 !important; height: 160px; }
+      .galeria-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+      #contato { grid-template-columns: 1fr; padding: 60px 20px; gap: 40px; }
+      .form-row { grid-template-columns: 1fr; }
+      .form-wrapper { padding: 32px 24px; }
+      footer { flex-direction: column; gap: 16px; text-align: center; padding: 32px 20px; }
+      .divider { padding: 0 20px; }
+      .modal-inner { max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="cursor" id="cursor"></div>
+
+  <!-- Modal Reel -->
+  <div id="reel-modal">
+    <div class="modal-inner">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="modal-embed" id="modal-embed"></div>
+      <div class="modal-nav">
+        <button onclick="prevReel()">←</button>
+        <span class="modal-counter" id="modal-counter">1 / 8</span>
+        <button onclick="nextReel()">→</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lightbox fotos -->
+  <div id="lightbox">
+    <button id="lightbox-close" onclick="closeLightbox()">✕</button>
+    <img id="lightbox-img" src="" alt="" />
+  </div>
+
+  <!-- NAV -->
+  <nav id="nav">
+    <a href="#hero" class="nav-logo">
+      <img src="assets/logo.png" alt="André & Thiago" />
+      <span>André & Thiago</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#sobre">Sobre</a></li>
+      <li><a href="#showreel">Vídeos</a></li>
+      <li><a href="#galeria">Galeria</a></li>
+      <li><a href="#contato" class="nav-cta">Contratar</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-lines"></div>
+    <div class="hero-left reveal">
+      <div class="hero-tag">Música ao vivo · Campinas e região</div>
+      <h1 class="hero-title">Música que<br><em>conecta pessoas</em></h1>
+      <p class="hero-sub">André & Thiago levam autenticidade, emoção e repertório eclético para bares, restaurantes, eventos corporativos e celebrações. Cada show é uma experiência única.</p>
+      <div class="hero-btns">
+        <a href="#contato" class="btn-primary">Contratar a dupla</a>
+        <a href="#showreel" class="btn-secondary">Ver vídeos</a>
+      </div>
+    </div>
+    <div class="hero-right reveal">
+      <div class="hero-img-wrapper">
+        <div class="hero-img-frame">
+          <img src="assets/foto3.jpg" alt="André & Thiago tocando" />
+        </div>
+        <div class="hero-badge">
+          <div class="hero-badge-num">+5</div>
+          <div class="hero-badge-txt">Anos de música</div>
+        </div>
+        <span class="deco-star" style="top:60px;left:-20px">✦</span>
+        <span class="deco-star" style="bottom:120px;right:20px;font-size:16px;animation-duration:12s">✦</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"><div class="divider-line"></div><div class="divider-ornament">✦</div><div class="divider-line"></div></div>
+
+  <!-- SOBRE -->
+  <section id="sobre">
+    <div class="sobre-left reveal">
+      <div class="sobre-card-grid">
+        <div class="sobre-card destaque">
+          <div class="sobre-card-icon">🎸</div>
+          <h4>Voz & Cajón com alma</h4>
+          <p>Uma dupla que mistura o melhor do sertanejo, MPB e pop com violão e cajón. Shows cheios de energia e emoção, adaptados ao seu público e ambiente.</p>
+        </div>
+        <div class="sobre-card">
+          <div class="sobre-card-icon">📍</div>
+          <h4>Onde tocamos</h4>
+          <p>Bares, restaurantes, eventos corporativos, casamentos, aniversários e festivais em Campinas e região.</p>
+        </div>
+        <div class="sobre-card">
+          <div class="sobre-card-icon">🎵</div>
+          <h4>Repertório</h4>
+          <p>Sertanejo, MPB, pop nacional e internacional — sempre afinado ao perfil do evento e do público.</p>
+        </div>
+      </div>
+    </div>
+    <div class="sobre-right reveal">
+      <div class="section-label">Quem somos</div>
+      <h2 class="section-title">Uma dupla feita de <em>paixão</em> pela música</h2>
+      <p class="section-body">André e Thiago se uniram pela música e nunca mais pararam. Com anos de palco e um repertório que conversa com todas as gerações, a dupla é referência em Campinas e região para quem quer um show que vai além do comum — descontraído, cheio de vida e que faz o público cantar junto.</p>
+      <div class="estilos-lista">
+        <span class="estilo-tag">🤠 Sertanejo</span>
+        <span class="estilo-tag">🎵 MPB</span>
+        <span class="estilo-tag">🎶 Pop Nacional</span>
+        <span class="estilo-tag">🌎 Internacional</span>
+        <span class="estilo-tag">🎼 Romântico</span>
+      </div>
+      <a href="#contato" class="btn-primary">Fale com a gente</a>
+    </div>
+  </section>
+
+  <div class="divider"><div class="divider-line"></div><div class="divider-ornament">✦</div><div class="divider-line"></div></div>
+
+  <!-- SHOWREEL — Reels do Instagram -->
+  <section id="showreel">
+    <div class="showreel-header reveal">
+      <div>
+        <div class="section-label">Ao vivo</div>
+        <h2 class="section-title">Veja a <em>energia</em> no palco</h2>
+      </div>
+      <p style="color:var(--areia);font-size:14px;max-width:260px;text-align:right;line-height:1.6">
+        Clique em qualquer vídeo para assistir direto do Instagram.
+      </p>
+    </div>
+
+    <div class="reels-grid reveal">
+      <div class="reel-card" onclick="openReel(0)">
+        <div class="reel-thumb">
+          <span class="reel-num">01</span>
+          <span class="reel-thumb-icon">🎸</span>
+          <div class="reel-play-btn"><div class="reel-play-circle">▶</div></div>
+        </div>
+        <div class="reel-info"><p>Show ao vivo</p></div>
+      </div>
+      <div class="reel-card" onclick="openReel(1)">
+        <div class="reel-thumb">
+          <span class="reel-num">02</span>
+          <span class="reel-thumb-icon">🎤</span>
+          <div class="reel-play-btn"><div class="reel-play-circle">▶</div></div>
+        </div>
+        <div class="reel-info"><p>Noite de show</p></div>
+      </div>
+      <div class="reel-card" onclick="openReel(2)">
+        <div class="reel-thumb">
+          <span class="reel-num">03</span>
+          <span class="reel-thumb-icon">🎵</span>
+          <div class="reel-play-btn"><div class="reel-play-circle">▶</div></div>
+        </div>
+        <div class="reel-info"><p>Apresentação especial</p></div>
+      </div>
+      <div class="reel-card" onclick="openReel(3)">
+        <div class="reel-thumb">
+          <span class="reel-num">04</span>
+          <span class="reel-thumb-icon">🌟</span>
+          <div class="reel-play-btn"><div class="reel-play-circle">▶</div></div>
+        </div>
+        <div class="reel-info"><p>Momento único</p></div>
+      </div>
+      <div class="reel-card" onclick="openReel(4)">
+        <div class="reel-thumb">
+          <span class="reel-num">05</span>
+          <span class="reel-thumb-icon">🎶</span>
+          <div class="reel-play-btn"><div class="reel-play-circle">▶</div></div>
+        </div>
+        <div class="reel-info"><p>Ao vivo no bar</p></div>
+      </div>
+      <div class="reel-card" onclick="openReel(5)">
+        <div class="reel-thumb">
+          <span class="reel-num">06</span>
+          <span class="reel-thumb-icon">🎼</span>
+          <div class="reel-play-btn"><div class="reel-play-circle">▶</div></div>
+        </div>
+        <div class="reel-info"><p>Show no restaurante</p></div>
+      </div>
+      <div class="reel-card" onclick="openReel(6)">
+        <div class="reel-thumb">
+          <span class="reel-num">07</span>
+          <span class="reel-thumb-icon">🔥</span>
+          <div class="reel-play-btn"><div class="reel-play-circle">▶</div></div>
+        </div>
+        <div class="reel-info"><p>Energia total</p></div>
+      </div>
+      <div class="reel-card" onclick="openReel(7)">
+        <div class="reel-thumb">
+          <span class="reel-num">08</span>
+          <span class="reel-thumb-icon">✨</span>
+          <div class="reel-play-btn"><div class="reel-play-circle">▶</div></div>
+        </div>
+        <div class="reel-info"><p>Último show</p></div>
+      </div>
+    </div>
+
+    <div class="showreel-stats reveal">
+      <div class="stat-item"><div class="stat-num">+50</div><div class="stat-label">Shows realizados</div></div>
+      <div class="stat-divider"></div>
+      <div class="stat-item"><div class="stat-num">+10</div><div class="stat-label">Bares e restaurantes</div></div>
+      <div class="stat-divider"></div>
+      <div class="stat-item"><div class="stat-num">+5</div><div class="stat-label">Anos de parceria</div></div>
+      <div class="stat-divider"></div>
+      <div class="stat-item"><div class="stat-num">100%</div><div class="stat-label">Comprometimento</div></div>
+    </div>
+  </section>
+
+  <div class="divider"><div class="divider-line"></div><div class="divider-ornament">✦</div><div class="divider-line"></div></div>
+
+  <!-- GALERIA -->
+  <section id="galeria">
+    <div class="galeria-header reveal">
+      <div>
+        <div class="section-label">Momentos</div>
+        <h2 class="section-title">Nossa <em>galeria</em></h2>
+      </div>
+      <p style="color:var(--areia);font-size:14px;max-width:280px;text-align:right">Cada show é um momento único. Veja um pouco da nossa energia no palco.</p>
+    </div>
+    <div class="galeria-grid reveal">
+      <div class="galeria-item" onclick="openLightbox('assets/foto1.jpg')"><img src="assets/foto1.jpg" alt="Show 1" /></div>
+      <div class="galeria-item" onclick="openLightbox('assets/foto3.jpg')"><img src="assets/foto3.jpg" alt="Show 2" /></div>
+      <div class="galeria-item" onclick="openLightbox('assets/foto6.jpg')"><img src="assets/foto6.jpg" alt="Show 3" /></div>
+      <div class="galeria-item" onclick="openLightbox('assets/foto4.jpg')"><img src="assets/foto4.jpg" alt="Show 4" /></div>
+      <div class="galeria-item" onclick="openLightbox('assets/foto5.jpg')"><img src="assets/foto5.jpg" alt="Show 5" /></div>
+      <div class="galeria-item" onclick="openLightbox('assets/foto2.jpg')"><img src="assets/foto2.jpg" alt="Show 6" /></div>
+    </div>
+  </section>
+
+  <div class="divider"><div class="divider-line"></div><div class="divider-ornament">✦</div><div class="divider-line"></div></div>
+
+  <!-- CONTATO -->
+  <section id="contato">
+    <div class="contato-left reveal">
+      <div class="section-label">Contato</div>
+      <h2 class="section-title">Vamos <em>tocar</em> no seu evento?</h2>
+      <p class="section-body">Fale com a gente pelo WhatsApp ou Instagram. Adoramos conhecer novos espaços e criar experiências musicais memoráveis.</p>
+      <div class="contato-cards">
+        <a href="https://wa.me/5519987801102" target="_blank" class="contato-card">
+          <div class="contato-card-icon whats">📱</div>
+          <div class="contato-card-text"><h4>WhatsApp</h4><p>(19) 9 8780-1102 · Resposta rápida</p></div>
+          <div class="contato-card-arrow">→</div>
+        </a>
+        <a href="https://www.instagram.com/andreethiago19" target="_blank" class="contato-card">
+          <div class="contato-card-icon insta">📸</div>
+          <div class="contato-card-text"><h4>Instagram</h4><p>@andreethiago19 · Veja nossos vídeos</p></div>
+          <div class="contato-card-arrow">→</div>
+        </a>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="form-wrapper">
+        <h3 class="form-title">Solicite um orçamento</h3>
+        <p class="form-sub">Preencha e entraremos em contato em até 24h.</p>
+        <form onsubmit="enviarForm(event)">
+          <div class="form-row">
+            <div class="form-group"><label>Seu nome</label><input type="text" placeholder="Ex: João Silva" required /></div>
+            <div class="form-group"><label>WhatsApp</label><input type="tel" placeholder="(19) 9..." required /></div>
+          </div>
+          <div class="form-group">
+            <label>Tipo de evento</label>
+            <select required>
+              <option value="" disabled selected>Selecione...</option>
+              <option>Bar / Restaurante</option>
+              <option>Casamento</option>
+              <option>Aniversário</option>
+              <option>Evento Corporativo</option>
+              <option>Festival</option>
+              <option>Outro</option>
+            </select>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>Data do evento</label><input type="date" required /></div>
+            <div class="form-group"><label>Cidade</label><input type="text" placeholder="Ex: Campinas" required /></div>
+          </div>
+          <div class="form-group"><label>Mensagem (opcional)</label><textarea placeholder="Conte um pouco mais sobre o evento..."></textarea></div>
+          <button type="submit" class="btn-form">Enviar pelo WhatsApp 🎸</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-brand">
+      <img src="assets/logo.png" alt="André & Thiago" />
+      <span>André & Thiago</span>
+    </div>
+    <p style="font-size:12px;color:rgba(232,224,212,0.3);letter-spacing:1px">© 2025 André & Thiago · Música ao Vivo · Campinas, SP</p>
+    <p style="font-size:11px;color:rgba(232,224,212,0.2);letter-spacing:1px">Música que conecta, histórias que ficam.</p>
+  </footer>
+
+  <script>
+    // Reels do Instagram — IDs extraídos dos links
+    const reels = [
+      { id: 'DI1qOwKxNVD', title: 'Show ao vivo' },
+      { id: 'DI1qXfqRX3a', title: 'Noite de show' },
+      { id: 'DI1qetgRQeK', title: 'Apresentação especial' },
+      { id: 'DI1qmzQxl3p', title: 'Momento único' },
+      { id: 'DJzFk_Dx1z5', title: 'Ao vivo no bar' },
+      { id: 'DKMiazGNODh', title: 'Show no restaurante' },
+      { id: 'DKZvR1mtww4', title: 'Energia total' },
+      { id: 'DMc-jGKxy3o', title: 'Último show' },
+    ];
+
+    let currentReel = 0;
+
+    function openReel(index) {
+      currentReel = index;
+      renderReel();
+      document.getElementById('reel-modal').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('reel-modal').classList.remove('open');
+      document.getElementById('modal-embed').innerHTML = '';
+      document.body.style.overflow = '';
+    }
+
+    function renderReel() {
+      const reel = reels[currentReel];
+      document.getElementById('modal-counter').textContent = `${currentReel + 1} / ${reels.length}`;
+      document.getElementById('modal-embed').innerHTML = `
+        <blockquote
+          class="instagram-media"
+          data-instgrm-captioned
+          data-instgrm-permalink="https://www.instagram.com/reel/${reel.id}/"
+          data-instgrm-version="14"
+          style="background:#000;border:0;border-radius:20px;margin:0;max-width:100%;width:100%;">
+        </blockquote>
+      `;
+      // Reprocess Instagram embeds
+      if (window.instgrm) {
+        window.instgrm.Embeds.process();
+      }
+    }
+
+    function nextReel() {
+      currentReel = (currentReel + 1) % reels.length;
+      renderReel();
+    }
+
+    function prevReel() {
+      currentReel = (currentReel - 1 + reels.length) % reels.length;
+      renderReel();
+    }
+
+    // Fechar modal ao clicar fora
+    document.getElementById('reel-modal').addEventListener('click', e => {
+      if (e.target === document.getElementById('reel-modal')) closeModal();
+    });
+
+    // Cursor
+    const cursor = document.getElementById('cursor');
+    document.addEventListener('mousemove', e => { cursor.style.left = e.clientX+'px'; cursor.style.top = e.clientY+'px'; });
+    document.querySelectorAll('a, button, .reel-card, .galeria-item').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+    });
+
+    // Nav scroll
+    window.addEventListener('scroll', () => {
+      document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // Reveal on scroll
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Lightbox
+    function openLightbox(src) {
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox').classList.add('open');
+    }
+    function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
+    document.getElementById('lightbox').addEventListener('click', e => {
+      if (e.target === document.getElementById('lightbox')) closeLightbox();
+    });
+
+    // Form → WhatsApp
+    function enviarForm(e) {
+      e.preventDefault();
+      const f = e.target;
+      const inputs = f.querySelectorAll('input[type="text"]');
+      const nome = inputs[0].value;
+      const tel = f.querySelector('input[type="tel"]').value;
+      const tipo = f.querySelector('select').value;
+      const data = f.querySelector('input[type="date"]').value;
+      const cidade = inputs[1].value;
+      const msg = f.querySelector('textarea').value;
+      const texto = `Olá André & Thiago! 🎸\n\nNome: ${nome}\nTelefone: ${tel}\nEvento: ${tipo}\nData: ${data}\nCidade: ${cidade}${msg ? '\nMensagem: '+msg : ''}\n\nGostaria de solicitar um orçamento!`;
+      window.open(`https://wa.me/5519987801102?text=${encodeURIComponent(texto)}`, '_blank');
+    }
+  </script>
+
+  <!-- Instagram embed script -->
+  <script async src="//www.instagram.com/embed.js"></script>
+</body>
+</html>
